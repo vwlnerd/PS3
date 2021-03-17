@@ -1,6 +1,6 @@
 ---
 title: "PS3"
-author: "Amadeo Grob"
+author: "Amadeo Grob, Sari Issa, Yinuo Peng, Olivia Torr, Xingzao Yang"
 date: "17 3 2021"
 output: pdf_document
 ---
