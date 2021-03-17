@@ -1,0 +1,63 @@
+---
+title: "PS3"
+author: "Amadeo Grob"
+date: "17 3 2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(shiny)
+library(xfun)
+library(haven)
+library(randomizeR)
+library(blockTools)
+library(samplingbook)
+library(ggplot2)
+library(plotrix)
+library(survival)
+library(blockrand)
+library(tibble)
+library(ATE)
+library(vtable)
+library(tinytex)
+```
+
+Problem Set 3 Analysis of Experimental Data: Project STAR
+
+1) Summary statistics
+```{r}
+data <- read_dta("STAR.dta")
+data$girl <- as.factor(data$girl)
+data$freelunk <- as.factor(data$freelunk)
+data$sck <- as.factor(data$sck)
+summary(data)
+aggregate(tscorek ~ sck, mean, data=data)
+max(data$totexpk_m)
+```
+There are 2795 girls and 2954 boys in the dataset.
+The mean outcome for all students (testscore) is 461.2 and the median is 457.5.
+The mean for the treated is 466 and for the control 459.1.
+The most experienced teacher has 324 months of experience, that's equal to 27 years of teaching.
+
+
+2) OLS Regression
+```{r}
+
+```
+
+3) Standard Errors
+```{r}
+
+```
+
+4) Testing whether randomization worked (using Ws)
+```{r}
+
+```
+
+5) Heterogeneity in Treatment Effects
+```{r}
+
+```
