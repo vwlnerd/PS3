@@ -22,6 +22,10 @@ library(tibble)
 library(ATE)
 library(vtable)
 library(tinytex)
+library(lme4)
+library(plm)
+library(sandwich)
+library(lmtest)
 ```
 
 Problem Set 3 Analysis of Experimental Data: Project STAR
@@ -45,15 +49,60 @@ The most experienced teacher has 324 months of experience, that's equal to 27 ye
 2) OLS Regression
 ```{r}
 
+#AG#
+fit1 <- lm(tscorek ~ sck, data = data) #fit linear regression
+par(mfrow = c(2,2))
+plot(fit1, which = 2:5) #diagnostic plots
+par(mfrow = c(1,1))
+summary(fit1)
+
+fit2 <- plm(tscorek ~ sck, index = c("schidkn"), model = "within", data = data) #fit linear regression with school fixed effects
+summary(fit2)
+fitcheck <- lmer(tscorek ~ 1 + sck + (1|schidkn), data = data) #same with another package
+summary(fitcheck)
+
+sqrt(var(data$tscorek)) #get standard deviation
+#AG#
+
 ```
 
 3) Standard Errors
 ```{r}
 
+#AG#
+coeftest(fit2, vcov = vcovHC(fit2, type="HC3"))
+#AG#
+
 ```
 
 4) Testing whether randomization worked (using Ws)
 ```{r}
+#AG#
+data$girl <- as.numeric(data$girl)
+data$freelunk <- as.numeric(data$freelunk)
+data$sck <- as.numeric(data$sck)
+
+fitc1 <- lm(sck ~ girl, data = data)
+summary(fitc1)
+
+fitc2 <- lm(sck ~ freelunk, family = binomial, data = data)
+summary(fitc2)
+
+fitc3 <- lm(sck ~ totexpk_m, data = data)
+summary(fitc3)
+
+fitc4 <- lm(sck ~ girl + freelunk + totexpk_m, data = data)
+summary(fitc4)
+
+anova(fitc4)
+
+data$girl <- as.factor(data$girl)
+data$freelunk <- as.factor(data$freelunk)
+data$sck <- as.factor(data$sck)
+
+fit3 <- lm(tscorek ~ sck + girl + freelunk + totexpk_m, data = data)
+summary(fit3)
+#AG#
 
 ```
 
