@@ -40,10 +40,10 @@ summary(data)
 aggregate(tscorek ~ sck, mean, data=data)
 max(data$totexpk_m)
 ```
-There are 2795 girls and 2954 boys in the dataset.
-The mean outcome for all students (testscore) is 461.2 and the median is 457.5.
-The mean for the treated is 466 and for the control 459.1.
-The most experienced teacher has 324 months of experience, that's equal to 27 years of teaching.
+a. There are 2795 girls and 2954 boys in the dataset, so more boys.
+b.The mean outcome for all students (testscore) is 461.2 and the median is 457.5.
+    The mean for the treated is 466 and for the control 459.1.
+c.The most experienced teacher has 324 months of experience, that's equal to 27 years of teaching.
 
 
 2) OLS Regression
@@ -64,6 +64,24 @@ summary(fitcheck)
 sqrt(var(data$tscorek)) #get standard deviation
 #AG#
 
+
+#SI
+2)
+a.
+```{r}
+reg<-lm(tscorek~sck,data=data)
+summary(reg)
+```
+Using OLS we find a Beta of 6.9128. The interpretation of this beta is as follows: children who were in a smaller classroom (recieved treatment), performed on average around 6.91 points better on the SAT in expectation relative to their peers in larger classrooms. The Estimate is large and statistically significant at all conventional alpha values. The SE is small enough such that the estimate found is unlikely to be coincidental, but can be attributed to treatment.
+
+2.b)
+```{r}
+library(plm)
+fe_reg<-plm(tscorek~sck,model="within",index=c("schidkn"),data=data)
+summary(fe_reg)
+```
+I prefer the estimate which takes into account the correlation structure from belonging to different schools with different resources or teachers etc. 
+#SI#
 ```
 
 3) Standard Errors
@@ -72,6 +90,20 @@ sqrt(var(data$tscorek)) #get standard deviation
 #AG#
 coeftest(fit2, vcov = vcovHC(fit2, type="HC3"))
 #AG#
+
+#SI#
+```{r}
+plot(reg)
+```
+I do not agree with the researcher. Overall, the treatment assignment probably eliminates selection bias and the OVB that might entail, so in some sense he/she is right. However, it is very possible that the treatment increases/decreases the variability of performance, so we might have Heteroscedasticity. Using HC robust SE is probably a good idea.
+
+3) b.
+```{r}
+library(lmtest)
+library(sandwich)
+coeftest(fe_reg,vcov=vcovHC(fe_reg,type="HC3"))
+```
+#SI#
 
 ```
 
@@ -105,6 +137,47 @@ summary(fit3)
 #AG#
 
 ```
+#SI#
+
+4.
+a)
+```{r}
+lm1<-lm(as.numeric(sck)~girl,data=data)
+summary(lm1)
+lm2<-lm(as.numeric(sck)~freelunk,data=data)
+summary(lm2)
+lm3<-lm(as.numeric(sck)~totexpk_m,data=data)
+summary(lm3)
+```
+4)
+b.
+```{r}
+lm4<-lm(as.numeric(sck)~girl+freelunk+totexpk_m,data=data)
+anova(lm4)
+```
+4)
+c.
+```{r}
+reg2<-lm(tscorek~sck+girl+freelunk+totexpk_m,data=data)
+
+summary(reg2)
+```
+#SI#
+
+
+5).a.
+doesnt work:
+#SI#
+```{r}
+library(plm)
+reg_full<-plm(tscorek~girl+totexpk_m+freelunk+I(sck*girl)+I(sck*freelunk)+I(sck*totexpk_m),model="within",index="schidkn",data=data)
+reg_full<-plm(tscorek~girl+sck+I(sck*girl),model="within",index=c("schidkn"),data=data)
+
+str(data)
+```
+#SI#
+
+
 
 5) Heterogeneity in Treatment Effects
 ```{r}
